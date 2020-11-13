@@ -33,7 +33,7 @@ struct CollectionP
 // @brief Créé une collection initialisée en tant que collection vide
 Collection col_creer()
 {
-    Collection result;
+    Collection result = malloc(sizeof(struct CollectionP));
     result->premier = NULL;
     result->dernier = NULL;
     result->nombreVoitures = 0;
@@ -44,7 +44,25 @@ Collection col_creer()
 // @brief Créé une collection a partir d'une autre collection (clone)
 Collection col_creerCopie(const_Collection source)
 {
-    // TODO This
+    Collection result = malloc(sizeof(struct CollectionP));
+    result->nombreVoitures = source->nombreVoitures;
+    result->estTrie = source->estTrie;
+    
+    if (source->premier == NULL)
+    {
+        result->premier = NULL;
+        result->dernier = NULL;
+    }
+    else
+    {
+        Element * elementSuivant = source->premier;
+        while (elementSuivant != NULL)
+        {
+            col_addVoitureSansTri(result, elementSuivant->voiture);
+            elementSuivant = elementSuivant->suivant;
+        }
+    }
+    return result;
 }
 
 void col_detruire(Collection *pself)
@@ -63,7 +81,7 @@ void col_vider(Collection self)
  *----------*/
 int col_getNbVoitures(const_Collection self)
 {
-    // TODO This
+    return self->nombreVoitures;   
 }
 
 
@@ -127,7 +145,10 @@ void col_supprVoitureAvecTri(Collection self, int pos)
     // TODO This
 }
 
-void col_trier(Collection self);
+void col_trier(Collection self)
+{
+    // TODO This
+}
 
 
 /*----------*
