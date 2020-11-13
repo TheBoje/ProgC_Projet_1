@@ -1,6 +1,6 @@
 /********************************************************************
  * Module de Collection : corps
- * Auteurs : Louis Leenart & Vincent Commin
+ * Auteurs : Vincent Commin & Louis Leenart
  ********************************************************************/
 
 #include <stdlib.h>
@@ -22,6 +22,8 @@ struct CollectionP
 {
     Element * premier;
     Element * dernier;
+    int nombreVoitures;
+    bool estTrie;
 };
 
 /*----------*
@@ -34,6 +36,8 @@ Collection col_creer()
     Collection result;
     result->premier = NULL;
     result->dernier = NULL;
+    result->nombreVoitures = 0;
+    result->estTrie = true;
     return result;
 }
 
@@ -55,6 +59,7 @@ int col_getNbVoitures(const_Collection self);
 // on récupère une copie de la voiture
 Voiture col_getVoiture(const_Collection self, int pos);
 
+// @brief Ajoute la voiture à la fin de la chaine
 void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
     Element * element = malloc(sizeof(Element));
@@ -66,7 +71,7 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
         exit(EXIT_FAILURE);
     }
 
-    element->voiture = voiture;
+    element->voiture = voi_creerCopie(voiture);
 
     element->suivant = NULL;
     
@@ -83,11 +88,20 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
         self->dernier = element;
         element->precedent = NULL;
     }
+
+    self->nombreVoitures++;
+    if (self->nombreVoitures > 1)
+    {
+        self->estTrie = false;
+    }
 }
 void col_addVoitureAvecTri(Collection self, const_Voiture voiture);
 
 void col_supprVoitureSansTri(Collection self, int pos);
-void col_supprVoitureAvecTri(Collection self, int pos);
+void col_supprVoitureAvecTri(Collection self, int pos)
+{
+    
+}
 
 void col_trier(Collection self);
 
