@@ -44,20 +44,35 @@ Collection col_creer()
 // @brief Créé une collection a partir d'une autre collection (clone)
 Collection col_creerCopie(const_Collection source)
 {
-    Collection result;
+    // TODO This
 }
 
-void col_detruire(Collection *pself); 
+void col_detruire(Collection *pself)
+{
+    // TODO This
+}
 
-void col_vider(Collection self);
+void col_vider(Collection self)
+{
+    // TODO This
+}
 
 
 /*----------*
  * accesseurs
  *----------*/
-int col_getNbVoitures(const_Collection self);
+int col_getNbVoitures(const_Collection self)
+{
+    // TODO This
+}
+
+
 // on récupère une copie de la voiture
-Voiture col_getVoiture(const_Collection self, int pos);
+Voiture col_getVoiture(const_Collection self, int pos)
+{
+    // TODO This
+}
+
 
 // @brief Ajoute la voiture à la fin de la chaine
 void col_addVoitureSansTri(Collection self, const_Voiture voiture)
@@ -95,12 +110,21 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
         self->estTrie = false;
     }
 }
-void col_addVoitureAvecTri(Collection self, const_Voiture voiture);
 
-void col_supprVoitureSansTri(Collection self, int pos);
+
+void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
+{
+    // TODO This
+}
+
+void col_supprVoitureSansTri(Collection self, int pos)
+{
+    // TODO This
+}
+
 void col_supprVoitureAvecTri(Collection self, int pos)
 {
-    
+    // TODO This
 }
 
 void col_trier(Collection self);
@@ -109,12 +133,33 @@ void col_trier(Collection self);
 /*----------*
  * méthode secondaire d'affichage
  *----------*/
-void col_afficher(const_Collection self);
+
+// @brief Affiche les éléments de la collection et de toutes les voitures qu'elle contient
+void col_afficher(const_Collection self)
+{
+    printf("Collection :\n");
+    printf("\tEst trié : %s\n", self->estTrie ? "Vrai" : "Faux");
+    printf("\tNombre de voitures : %d\n", self->nombreVoitures);
+
+    Element * elementSuivant = self->premier;
+    while(elementSuivant != NULL)
+    {
+        voi_afficher(elementSuivant);
+        elementSuivant = elementSuivant->suivant;
+    }
+}
 
 
 /*----------*
  * entrées-sorties fichiers
  * note : le paramètre est un fichier déjà ouvert
  *----------*/
-void col_ecrireFichier(const_Collection self, FILE *fd);
-void col_lireFichier(Collection self, FILE *fd);
+void col_ecrireFichier(const_Collection self, FILE *fd)
+{
+    // TODO This
+}
+
+void col_lireFichier(Collection self, FILE *fd)
+{
+    // TODO This
+}
