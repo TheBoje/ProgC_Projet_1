@@ -125,7 +125,7 @@ Voiture col_getVoiture(const_Collection self, int pos)
         {
             element = element->precedent;
         }
-        return element->voiture
+        return element->voiture;
     }
     
 
@@ -151,7 +151,7 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
     
     if (self->dernier != NULL)
     {
-        (self->dernier)->suivant = element;
+        self->dernier->suivant = element;
         self->dernier = element;
 
         element->precedent = self->dernier;
@@ -178,7 +178,8 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
 
     Element * element = malloc(sizeof(Element)); // TODO Ajouter un free
-    
+    element->voiture = voi_creerCopie(voiture);
+
     // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
     if (element == NULL)
     {
@@ -188,15 +189,39 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
     if(voi_getAnnee(self->premier->voiture) > voi_getAnnee(voiture))
     {
-
+        // On ajoute la voiture au début de la liste chaînée
+        self->premier->precedent = element;
+        element->precedent = NULL;
+        element->suivant = self->premier;
+        self->premier = element;
     }
     else if(voi_getAnnee(self->dernier->voiture) < voi_getAnnee(voiture))
     {
-
+        // On ajoute la voiture à la fin de la liste chaînée
+        self->dernier->suivant = element;
+        element->suivant = NULL;
+        element->precedent = self->dernier;
+        self->dernier = element;
     }
     else
     {
-        
+        // On ajoute la voiture entre 2 autres voitures de la liste chaînée
+        Element * temp = self->premier;
+        while(temp != NULL)
+        {
+            // On arrete la boucle quand on trouve un élément qui est plus grand que l'élément qu'on veut placer
+            // L'élément temp est donc l'élément qui suit l'élément qu'on veut placer dans un ordre trié
+            if (voi_getAnnee(element->voiture) <= voi_getAnnee(temp->voiture))
+            {
+                break;
+            }
+            temp = temp->suivant;
+        }
+        // On créé alors tous les liens entre les différents éléments de la liste chaînée
+        temp->precedent->suivant = element;
+        element->precedent = temp->precedent;
+        temp->precedent = element;
+        element->suivant = temp;
     }
 }
 
