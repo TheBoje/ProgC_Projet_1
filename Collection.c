@@ -105,13 +105,20 @@ Collection col_creerCopie(const_Collection source)
 void col_detruire(Collection *pself)
 {
     Element * element = (*pself)->premier;
-    Element * elementSuivant = element->suivant;
+    Element * elementSuivant = NULL;
+    if (element != NULL && element->suivant != NULL)
+    {
+        elementSuivant = element->suivant;
+    }
     for (int i = 0; i < (*pself)->nombreVoitures; i++)
     {
         voi_detruire(&(element->voiture));
         free(element);
         element = elementSuivant;
-        elementSuivant = elementSuivant->suivant;
+        if (elementSuivant != NULL)
+        {
+            elementSuivant = elementSuivant->suivant;
+        }
     }
     free(*pself);
     *pself = NULL;
@@ -126,7 +133,10 @@ void col_vider(Collection self)
         voi_detruire(&(element->voiture));
         free(element);
         element = elementSuivant;
-        elementSuivant = elementSuivant->suivant;
+        if (elementSuivant != NULL)
+        {
+            elementSuivant = elementSuivant->suivant;
+        }
     }
     self->premier = NULL;
     self->dernier = NULL;
