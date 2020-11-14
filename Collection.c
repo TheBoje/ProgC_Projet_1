@@ -3,6 +3,25 @@
  * Auteurs : Vincent Commin & Louis Leenart
  ********************************************************************/
 
+/********************************************************************
+ * VALGRIND : (full)
+ * ==20756== Memcheck, a memory error detector
+ * ==20756== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+ * ==20756== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+ * ==20756== Command: ./main full
+ * ==20756== Parent PID: 20285
+ * ==20756== 
+ * ==20756== 
+ * ==20756== HEAP SUMMARY:
+ * ==20756==     in use at exit: 0 bytes in 0 blocks
+ * ==20756==   total heap usage: 187 allocs, 187 frees, 22,170 bytes allocated
+ * ==20756== 
+ * ==20756== All heap blocks were freed -- no leaks are possible
+ * ==20756== 
+ * ==20756== For lists of detected and suppressed errors, rerun with: -s
+ * ==20756== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+ ********************************************************************/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
