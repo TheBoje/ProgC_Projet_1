@@ -289,7 +289,7 @@ void col_supprVoitureSansTri(Collection self, int pos)
         voi_detruire(&(aSupprimer->voiture));
         free(aSupprimer);
     }
-    else if (pos == self->nombreVoitures)
+    else if (pos == self->nombreVoitures - 1)
     {
         aSupprimer = self->dernier;
         aSupprimer->precedent->suivant = NULL;
@@ -300,7 +300,7 @@ void col_supprVoitureSansTri(Collection self, int pos)
     else
     {
         aSupprimer = self->premier;
-        for (int i = 0; i <= pos; i++)
+        for (int i = 0; i < pos; i++)
         {
             aSupprimer = aSupprimer->suivant;
         }
