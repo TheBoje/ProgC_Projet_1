@@ -4,6 +4,7 @@
  ********************************************************************/
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "Collection.h"
 #include "myassert.h"
@@ -237,7 +238,33 @@ void col_supprVoitureAvecTri(Collection self, int pos)
 
 void col_trier(Collection self)
 {
-    // TODO This
+    if (self == NULL)
+    {
+        fprintf(stderr, "Error:Collection - col_trier - collection is null");
+        exit(EXIT_FAILURE);
+    }
+
+    for(int i = self->nombreVoitures - 1; i >= 0; i--)
+    {
+        Element * element = self->premier;
+        for(int j = 0; j < i; j++)
+        {
+            if(voi_getAnnee(element->suivant->voiture) < voi_getAnnee(element->voiture))
+            {
+                Element * suivant = element->suivant;
+
+                element->precedent->suivant = suivant;
+                suivant->suivant->precedent = element;
+                element->suivant = suivant->suivant;
+                suivant->suivant = element;
+                suivant->precedent = element->precedent;
+                element->precedent = suivant;
+            }
+
+            element = element->suivant;
+        }
+    }
+    self->estTrie = true;
 }
 
 
