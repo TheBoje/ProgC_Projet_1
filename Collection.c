@@ -302,14 +302,14 @@ void col_trier(Collection self)
         {
             if(voi_getAnnee(element->suivant->voiture) < voi_getAnnee(element->voiture))
             {
-                Element * suivant = element->suivant;
+                Element * elementSuivant = element->suivant;
 
-                element->precedent->suivant = suivant;
-                suivant->suivant->precedent = element;
-                element->suivant = suivant->suivant;
-                suivant->suivant = element;
-                suivant->precedent = element->precedent;
-                element->precedent = suivant;
+                (*element->precedent).suivant = elementSuivant;
+                (*elementSuivant->suivant).precedent = element;
+                (*element).suivant = elementSuivant->suivant;
+                (*elementSuivant).suivant = element;
+                (*elementSuivant).precedent = element->precedent;
+                (*element).precedent = elementSuivant;
             }
 
             element = element->suivant;
@@ -345,7 +345,12 @@ void col_afficher(const_Collection self)
  *----------*/
 void col_ecrireFichier(const_Collection self, FILE *fd)
 {
-    // TODO This
+    /*{
+        fprintf(stderr, "Error:Collection - col_ecrireFichier - collection or file is null");
+        exit(EXIT_FAILURE);
+    }
+
+    fwrite()*/
 }
 
 void col_lireFichier(Collection self, FILE *fd)
