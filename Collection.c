@@ -72,12 +72,31 @@ Collection col_creerCopie(const_Collection source)
     }
     else
     {
-        Element * elementSuivant = source->premier;
-        while (elementSuivant != NULL)
+        Element * elementActuel = source->premier;
+        Element * elementPrecedent = NULL;
+        for (int i = 0; i < result->nombreVoitures; i++)
         {
-            col_addVoitureSansTri(result, elementSuivant->voiture);
-            elementSuivant = elementSuivant->suivant;
+            Element * element = malloc(sizeof(Element)); // TODO Verifier le malloc NULL
+            element->voiture = voi_creerCopie(elementActuel->voiture);
+
+            element->precedent = elementPrecedent;
+            if (elementPrecedent == NULL)
+            {
+                result->premier = element;
+            }
+            else 
+            {
+                elementPrecedent->suivant = element;
+            }
+            if (source->dernier == elementActuel)
+            {
+                result->dernier = element;
+                element->suivant = NULL;
+            }
+            elementPrecedent = element;
+            elementActuel = elementActuel->suivant;
         }
+
     }
     return result;
 }
@@ -134,21 +153,21 @@ Voiture col_getVoiture(const_Collection self, int pos)
     if(pos < (self->nombreVoitures / 2))
     {
         Element * element = self->premier;
-        for(int i = 0; i <= pos; i++)
+        for(int i = 0; i < pos; i++)
         {
             element = element->suivant;
         }
-        return element->voiture;
+        return voi_creerCopie(element->voiture);
     }
     else
     {
         Element * element = self->dernier;
         // On parcours la liste en partant de la fin
-        for(int i = self->nombreVoitures - 1; i >= pos; i--)
+        for(int i = self->nombreVoitures - 1; i > pos; i--)
         {
             element = element->precedent;
         }
-        return element->voiture;
+        return voi_creerCopie(element->voiture);
     }
     
 
@@ -170,20 +189,21 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 
     element->voiture = voi_creerCopie(voiture);
 
-    element->suivant = NULL;
     
-    if (self->dernier != NULL)
+    
+    if (self->nombreVoitures == 0)
     {
-        self->dernier->suivant = element;
+        element->suivant = NULL;
+        element->precedent = NULL;
+        self->premier = element;
         self->dernier = element;
-
-        element->precedent = self->dernier;
     }
     else
     {
-        self->premier = element;
+        self->dernier->suivant = element;
+        element->suivant = NULL;
+        element->precedent = self->dernier;
         self->dernier = element;
-        element->precedent = NULL;
     }
 
     self->nombreVoitures++;
@@ -191,24 +211,28 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
     {
         self->estTrie = false;
     }
+    else
+    {
+        self->estTrie = true;
+    }
 }
 
 
 void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 {
-    //myassert(self->estTrie, "col_addVoitureSansTri - Collection not sorted");
+    myassert(self->estTrie, "col_addVoitureSansTri - Collection not sorted");
     myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
 
 
     Element * element = malloc(sizeof(Element));
-    element->voiture = voi_creerCopie(voiture);
-
     // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
     if (element == NULL)
     {
         fprintf(stderr, "Error:Collection - addVoitureSansTri - mem alloc failed");
         exit(EXIT_FAILURE);
     }
+
+    element->voiture = voi_creerCopie(voiture);
 
     if(voi_getAnnee(self->premier->voiture) > voi_getAnnee(voiture))
     {
@@ -234,11 +258,14 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
         {
             // On arrete la boucle quand on trouve un élément qui est plus grand que l'élément qu'on veut placer
             // L'élément temp est donc l'élément qui suit l'élément qu'on veut placer dans un ordre trié
-            if (voi_getAnnee(element->voiture) <= voi_getAnnee(temp->voiture))
+            if (voi_getAnnee(element->voiture) < voi_getAnnee(temp->voiture))
             {
                 break;
             }
-            temp = temp->suivant;
+            else
+            {
+                temp = temp->suivant;
+            }
         }
         // On créé alors tous les liens entre les différents éléments de la liste chaînée
         temp->precedent->suivant = element;
