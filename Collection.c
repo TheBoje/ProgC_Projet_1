@@ -368,5 +368,73 @@ void col_ecrireFichier(const_Collection self, FILE *fd)
 
 void col_lireFichier(Collection self, FILE *fd)
 {
-    // TODO This
+    if(self == NULL || fd == NULL)
+    {
+        fprintf(stderr, "Error:Collection - col_lireFichier - collection or file is null");
+        exit(EXIT_FAILURE);
+    }
+
+    col_vider(self);
+    fseek(fd, 0, SEEK_SET);
+
+    fread(&(self->estTrie), sizeof(bool), 1, fd);
+    fread(&(self->nombreVoitures), sizeof(int), 1, fd);
+
+    if(self->nombreVoitures == 1)
+    {
+        Element * element = (Element *)malloc(sizeof(struct Element));
+        if(element == NULL)
+        {
+            fprintf(stderr, "Error:Collection - col_lireFichier - element is null");
+            exit(EXIT_FAILURE);
+        }
+
+        element->voiture = voi_creerFromFichier(fd);
+        element->precedent = NULL;
+        element->suivant = NULL;
+
+        self->premier = element;
+        self->dernier = element;
+    }
+    else
+    {
+        Element * element = (Element *)malloc(sizeof(struct Element));
+
+        if(element == NULL);
+        {
+            fprintf(stderr, "Error:Collection - col_lireFichier - element is null");
+            exit(EXIT_FAILURE);
+        }
+
+        for(int i = 0; i < self->nombreVoitures - 1; i++)
+        {
+            Element * elementSuivant = (Element *)malloc(sizeof(struct Element));
+
+            if(elementSuivant == NULL);
+            {
+                fprintf(stderr, "Error:Collection - col_lireFichier - elementSuivant is null");
+                exit(EXIT_FAILURE);
+            }
+
+            element->voiture = voi_creerFromFichier(fd);
+            if(i == 0)
+            {
+                
+                element->precedent = NULL;
+
+                self->premier = element; 
+            }
+            else if(i == self->nombreVoitures - 2)
+            {
+                elementSuivant->voiture = voi_creerFromFichier(fd);
+                elementSuivant->suivant = NULL;
+
+                self->dernier = elementSuivant;
+            }
+
+            elementSuivant->precedent = element;
+            element->suivant = elementSuivant;
+            element = elementSuivant;
+        }
+    }
 }
