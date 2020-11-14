@@ -16,8 +16,8 @@
 typedef struct Element
 {
     Voiture voiture;
-    Element * precedent;
-    Element * suivant;
+    struct Element * precedent;
+    struct Element * suivant;
 } Element;
 
 struct CollectionP
@@ -84,12 +84,34 @@ Collection col_creerCopie(const_Collection source)
 
 void col_detruire(Collection *pself)
 {
-    // TODO This
+    Element * element = (*pself)->premier;
+    Element * elementSuivant = element->suivant;
+    for (int i = 0; i < (*pself)->nombreVoitures; i++)
+    {
+        voi_detruire(&(element->voiture));
+        free(element);
+        element = elementSuivant;
+        elementSuivant = elementSuivant->suivant;
+    }
+    free(*pself);
+    *pself = NULL;
 }
 
 void col_vider(Collection self)
 {
-    // TODO This
+    Element * element = self->premier;
+    Element * elementSuivant = element->suivant;
+    for (int i = 0; i < self->nombreVoitures; i++)
+    {
+        voi_detruire(&(element->voiture));
+        free(element);
+        element = elementSuivant;
+        elementSuivant = elementSuivant->suivant;
+    }
+    self->premier = NULL;
+    self->dernier = NULL;
+    self->nombreVoitures = 0;
+    self->estTrie = true;
 }
 
 
@@ -137,7 +159,7 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
     myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
 
-    Element * element = malloc(sizeof(Element)); // TODO Ajouter un free
+    Element * element = malloc(sizeof(Element));
     
     // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
     if (element == NULL)
@@ -178,7 +200,7 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
     myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
 
 
-    Element * element = malloc(sizeof(Element)); // TODO Ajouter un free
+    Element * element = malloc(sizeof(Element));
     element->voiture = voi_creerCopie(voiture);
 
     // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
@@ -226,14 +248,43 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
     }
 }
 
+
 void col_supprVoitureSansTri(Collection self, int pos)
 {
-    // TODO This
+    Element * aSupprimer;
+    if (pos == 0)
+    {
+        aSupprimer = self->premier;
+        aSupprimer->suivant->precedent = NULL;
+        self->premier = aSupprimer->suivant;
+        voi_detruire(&(aSupprimer->voiture));
+        free(aSupprimer);
+    }
+    else if (pos == self->nombreVoitures)
+    {
+        aSupprimer = self->dernier;
+        aSupprimer->precedent->suivant = NULL;
+        self->dernier = aSupprimer->precedent;
+        voi_detruire(&(aSupprimer->voiture));
+        free(aSupprimer);
+    }
+    else
+    {
+        aSupprimer = self->premier;
+        for (int i = 0; i <= pos; i++)
+        {
+            aSupprimer = aSupprimer->suivant;
+        }
+        aSupprimer->suivant->precedent = aSupprimer->precedent;
+        aSupprimer->precedent->suivant = aSupprimer->suivant;
+        voi_detruire(&(aSupprimer->voiture));
+        free(aSupprimer);
+    }
 }
 
 void col_supprVoitureAvecTri(Collection self, int pos)
 {
-    // TODO This
+    col_supprVoitureSansTri(self, pos);
 }
 
 void col_trier(Collection self)
@@ -282,7 +333,7 @@ void col_afficher(const_Collection self)
     Element * elementSuivant = self->premier;
     while(elementSuivant != NULL)
     {
-        voi_afficher(elementSuivant);
+        voi_afficher(elementSuivant->voiture);
         elementSuivant = elementSuivant->suivant;
     }
 }
