@@ -127,7 +127,11 @@ void col_detruire(Collection *pself)
 void col_vider(Collection self)
 {
     Element * element = self->premier;
-    Element * elementSuivant = element->suivant;
+    Element * elementSuivant;
+    if (element != NULL && element->suivant != NULL)
+    {
+        elementSuivant = element->suivant;
+    }
     for (int i = 0; i < self->nombreVoitures; i++)
     {
         voi_detruire(&(element->voiture));
