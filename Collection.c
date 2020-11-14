@@ -302,16 +302,15 @@ void col_trier(Collection self)
         Element * element = self->premier;
         for(int j = 0; j < i; j++)
         {
+            
+            if(element == NULL)
+                break;
+            else if(element->suivant == NULL)
+                break;
+
             if(voi_getAnnee(element->suivant->voiture) < voi_getAnnee(element->voiture))
             {
-                Element * elementSuivant = element->suivant;
-
-                (*element->precedent).suivant = elementSuivant;
-                (*elementSuivant->suivant).precedent = element;
-                (*element).suivant = elementSuivant->suivant;
-                (*elementSuivant).suivant = element;
-                (*elementSuivant).precedent = element->precedent;
-                (*element).precedent = elementSuivant;
+                voi_swap(element->voiture, element->suivant->voiture);
             }
 
             element = element->suivant;
