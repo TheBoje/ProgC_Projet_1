@@ -324,6 +324,8 @@ void col_supprVoitureAvecTri(Collection self, int pos)
     col_supprVoitureSansTri(self, pos);
 }
 
+
+// @brief Tri la collection self en utilisant l'algorithme de tri à bulles
 void col_trier(Collection self)
 {
     if (self == NULL)
@@ -332,26 +334,26 @@ void col_trier(Collection self)
         exit(EXIT_FAILURE);
     }
 
-    for(int i = self->nombreVoitures - 1; i >= 0; i--)
+    if(!(self->estTrie))
     {
-        Element * element = self->premier;
-        for(int j = 0; j < i; j++)
-        {
-            
-            if(element == NULL)
-                break;
-            else if(element->suivant == NULL)
-                break;
-
-            if(voi_getAnnee(element->suivant->voiture) < voi_getAnnee(element->voiture))
+        for(int i = self->nombreVoitures - 1; i >= 0; i--)
+        {   
+            Element * element = self->premier;
+            for(int j = 0; j < i; j++)
             {
-                voi_swap(element->voiture, element->suivant->voiture);
-            }
+                if(element == NULL)
+                    break;
+                else if(element->suivant == NULL)
+                    break;
 
-            element = element->suivant;
+                if(voi_getAnnee(element->suivant->voiture) < voi_getAnnee(element->voiture))
+                    voi_swap(element->voiture, element->suivant->voiture);
+
+                element = element->suivant;
+            }
         }
+        self->estTrie = true;
     }
-    self->estTrie = true;
 }
 
 
@@ -379,6 +381,8 @@ void col_afficher(const_Collection self)
  * entrées-sorties fichiers
  * note : le paramètre est un fichier déjà ouvert
  *----------*/
+
+// @brief Ecrit les données d'une collection dans un fichier 
 void col_ecrireFichier(const_Collection self, FILE *fd)
 {
     if(self == NULL || fd == NULL)
@@ -400,6 +404,7 @@ void col_ecrireFichier(const_Collection self, FILE *fd)
     }
 }
 
+// @brief Remplie la collection self avec les données stockés dans le fichier fd
 void col_lireFichier(Collection self, FILE *fd)
 {
     if(self == NULL || fd == NULL)
@@ -408,15 +413,22 @@ void col_lireFichier(Collection self, FILE *fd)
         exit(EXIT_FAILURE);
     }
 
-    col_vider(self);
+    col_vider(self); // On vide la collection pour pouvoir l'écraser
     fseek(fd, 0, SEEK_SET);
 
     fread(&(self->estTrie), sizeof(bool), 1, fd);
     fread(&(self->nombreVoitures), sizeof(int), 1, fd);
 
+    Element * element = (Element *)malloc(sizeof(struct Element));
+    if(element == NULL)
+    {
+        fprintf(stderr, "Error:Collection - col_lireFichier - element is null");
+        exit(EXIT_FAILURE);
+    }
+
     if(self->nombreVoitures == 1)
     {
-        Element * element = (Element *)malloc(sizeof(struct Element));
+        // Si le fichier ne comporte qu'une voiture, la liste ne contient qu'une seule voiture
         if(element == NULL)
         {
             fprintf(stderr, "Error:Collection - col_lireFichier - element is null");
@@ -432,14 +444,6 @@ void col_lireFichier(Collection self, FILE *fd)
     }
     else
     {
-        Element * element = (Element *)malloc(sizeof(struct Element));
-
-        if(element == NULL)
-        {
-            fprintf(stderr, "Error:Collection - col_lireFichier - element is null");
-            exit(EXIT_FAILURE);
-        }
-
         for(int i = 0; i < self->nombreVoitures - 1; i++)
         {
             Element * elementSuivant = (Element *)malloc(sizeof(struct Element));
