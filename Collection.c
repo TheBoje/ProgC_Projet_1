@@ -89,14 +89,37 @@ int col_getNbVoitures(const_Collection self)
 // on récupère une copie de la voiture
 Voiture col_getVoiture(const_Collection self, int pos)
 {
-    // TODO This    
-}
+    myassert((pos >= 0) && (pos < self->nombreVoitures), "col_getVoiture - Position not valid");
+    
 
+    // On regarde si la position est dans la première ou deuxième moitié de la liste afin d'effectuer le minimum d'opérations
+    if(pos < (self->nombreVoitures / 2))
+    {
+        Element * element = self->premier;
+        for(int i = 0; i <= pos; i++)
+        {
+            element = element->suivant;
+        }
+        return element->voiture;
+    }
+    else
+    {
+        Element * element = self->dernier;
+        // On parcours la liste en partant de la fin
+        for(int i = self->nombreVoitures - 1; i >= pos; i--)
+        {
+            element = element->precedent;
+        }
+        return element->voiture
+    }
+    
+
+}
 
 // @brief Ajoute la voiture à la fin de la chaine
 void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
-    Element * element = malloc(sizeof(Element));
+    Element * element = malloc(sizeof(Element)); // TODO Ajouter un free
     
     // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
     if (element == NULL)
