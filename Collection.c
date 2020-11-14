@@ -35,6 +35,12 @@ struct CollectionP
 Collection col_creer()
 {
     Collection result = malloc(sizeof(struct CollectionP));
+    // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
+    if (result == NULL)
+    {
+        fprintf(stderr,"Error:Collection - col_creer - mem alloc failed");
+        exit(EXIT_FAILURE);
+    }
     result->premier = NULL;
     result->dernier = NULL;
     result->nombreVoitures = 0;
@@ -45,7 +51,16 @@ Collection col_creer()
 // @brief Créé une collection a partir d'une autre collection (clone)
 Collection col_creerCopie(const_Collection source)
 {
+    myassert(source != NULL, "col_creerCopie - Source is null");
+
     Collection result = malloc(sizeof(struct CollectionP));
+    // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
+    if (result == NULL)
+    {
+        fprintf(stderr,"Error:Collection - col_creer - mem alloc failed");
+        exit(EXIT_FAILURE);
+    }
+
     result->nombreVoitures = source->nombreVoitures;
     result->estTrie = source->estTrie;
     
@@ -119,6 +134,8 @@ Voiture col_getVoiture(const_Collection self, int pos)
 // @brief Ajoute la voiture à la fin de la chaine
 void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
+    myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
+
     Element * element = malloc(sizeof(Element)); // TODO Ajouter un free
     
     // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
@@ -158,6 +175,16 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 {
     myassert(self->estTrie, "col_addVoitureSansTri - Collection not sorted");
     myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
+
+
+    Element * element = malloc(sizeof(Element)); // TODO Ajouter un free
+    
+    // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
+    if (element == NULL)
+    {
+        fprintf(stderr, "Error:Collection - addVoitureSansTri - mem alloc failed");
+        exit(EXIT_FAILURE);
+    }
 
     if(voi_getAnnee(self->premier->voiture) > voi_getAnnee(voiture))
     {
