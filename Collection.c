@@ -97,7 +97,6 @@ Collection col_creerCopie(const_Collection source)
             elementPrecedent = element;
             elementActuel = elementActuel->suivant;
         }
-
     }
     return result;
 }
@@ -163,7 +162,6 @@ Voiture col_getVoiture(const_Collection self, int pos)
 {
     myassert((pos >= 0) && (pos < self->nombreVoitures), "col_getVoiture - Position not valid");
     
-
     // On regarde si la position est dans la première ou deuxième moitié de la liste afin d'effectuer le minimum d'opérations
     if(pos < (self->nombreVoitures / 2))
     {
@@ -184,8 +182,6 @@ Voiture col_getVoiture(const_Collection self, int pos)
         }
         return voi_creerCopie(element->voiture);
     }
-    
-
 }
 
 // @brief Ajoute la voiture à la fin de la chaine
@@ -201,11 +197,8 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
         fprintf(stderr, "Error:Collection - addVoitureSansTri - mem alloc failed");
         exit(EXIT_FAILURE);
     }
-
     element->voiture = voi_creerCopie(voiture);
 
-    
-    
     if (self->nombreVoitures == 0)
     {
         element->suivant = NULL;
@@ -223,13 +216,9 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 
     self->nombreVoitures++;
     if (self->nombreVoitures > 1)
-    {
         self->estTrie = false;
-    }
     else
-    {
         self->estTrie = true;
-    }
 }
 
 
@@ -237,7 +226,6 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 {
     myassert(self->estTrie, "col_addVoitureSansTri - Collection not sorted");
     myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
-
 
     Element * element = malloc(sizeof(Element));
     // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
@@ -248,7 +236,6 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
     }
 
     element->voiture = voi_creerCopie(voiture);
-
     if(voi_getAnnee(self->premier->voiture) > voi_getAnnee(voiture))
     {
         // On ajoute la voiture au début de la liste chaînée
@@ -342,12 +329,10 @@ void col_trier(Collection self)
                 break;
             else if(element->suivant == NULL)
                 break;
-
             if(voi_getAnnee(element->suivant->voiture) < voi_getAnnee(element->voiture))
             {
                 voi_swap(element->voiture, element->suivant->voiture);
             }
-
             element = element->suivant;
         }
     }
