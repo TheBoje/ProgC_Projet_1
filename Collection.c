@@ -83,12 +83,34 @@ Collection col_creerCopie(const_Collection source)
 
 void col_detruire(Collection *pself)
 {
-    // TODO This
+    Element * element = (*pself)->premier;
+    Element * elementSuivant = element->suivant;
+    for (int i = 0; i < (*pself)->nombreVoitures; i++)
+    {
+        voi_detruire(&(element->voiture));
+        free(element);
+        element = elementSuivant;
+        elementSuivant = elementSuivant->suivant;
+    }
+    free(*pself);
+    *pself = NULL;
 }
 
 void col_vider(Collection self)
 {
-    // TODO This
+    Element * element = self->premier;
+    Element * elementSuivant = element->suivant;
+    for (int i = 0; i < self->nombreVoitures; i++)
+    {
+        voi_detruire(&(element->voiture));
+        free(element);
+        element = elementSuivant;
+        elementSuivant = elementSuivant->suivant;
+    }
+    self->premier = NULL;
+    self->dernier = NULL;
+    self->nombreVoitures = 0;
+    self->estTrie = true;
 }
 
 
@@ -136,7 +158,7 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
     myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
 
-    Element * element = malloc(sizeof(Element)); // TODO Ajouter un free
+    Element * element = malloc(sizeof(Element));
     
     // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
     if (element == NULL)
@@ -177,7 +199,7 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
     myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
 
 
-    Element * element = malloc(sizeof(Element)); // TODO Ajouter un free
+    Element * element = malloc(sizeof(Element));
     element->voiture = voi_creerCopie(voiture);
 
     // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
