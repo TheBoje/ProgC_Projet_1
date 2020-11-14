@@ -96,7 +96,7 @@ Collection col_creerCopie(const_Collection source)
         Element * elementPrecedent = NULL;
         for (int i = 0; i < result->nombreVoitures; i++)
         {
-            Element * element = malloc(sizeof(Element)); // TODO Verifier le malloc NULL
+            Element * element = malloc(sizeof(Element)); 
             element->voiture = voi_creerCopie(elementActuel->voiture);
 
             element->precedent = elementPrecedent;
