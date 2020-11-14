@@ -400,7 +400,7 @@ void col_lireFichier(Collection self, FILE *fd)
     {
         Element * element = (Element *)malloc(sizeof(struct Element));
 
-        if(element == NULL);
+        if(element == NULL)
         {
             fprintf(stderr, "Error:Collection - col_lireFichier - element is null");
             exit(EXIT_FAILURE);
@@ -410,7 +410,7 @@ void col_lireFichier(Collection self, FILE *fd)
         {
             Element * elementSuivant = (Element *)malloc(sizeof(struct Element));
 
-            if(elementSuivant == NULL);
+            if(elementSuivant == NULL)
             {
                 fprintf(stderr, "Error:Collection - col_lireFichier - elementSuivant is null");
                 exit(EXIT_FAILURE);
