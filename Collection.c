@@ -4,6 +4,7 @@
  ********************************************************************/
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
 
 #include "Collection.h"
@@ -346,12 +347,23 @@ void col_afficher(const_Collection self)
  *----------*/
 void col_ecrireFichier(const_Collection self, FILE *fd)
 {
-    /*{
+    if(self == NULL || fd == NULL)
+    {
         fprintf(stderr, "Error:Collection - col_ecrireFichier - collection or file is null");
         exit(EXIT_FAILURE);
     }
 
-    fwrite()*/
+    fseek(fd, 0, SEEK_SET);
+    fwrite(&(self->estTrie), sizeof(bool), 1, fd);
+    fwrite(&(self->nombreVoitures), sizeof(int), 1, fd);
+    
+    Element * element = self->premier;
+
+    while(element != NULL)
+    {
+        voi_ecrireFichier(element->voiture, fd);
+        element = element->suivant;
+    }
 }
 
 void col_lireFichier(Collection self, FILE *fd)
