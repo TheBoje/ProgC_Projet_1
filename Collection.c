@@ -15,8 +15,8 @@
 typedef struct Element
 {
     Voiture voiture;
-    Element * precedent;
-    Element * suivant;
+    struct Element * precedent;
+    struct Element * suivant;
 } Element;
 
 struct CollectionP
@@ -306,7 +306,7 @@ void col_afficher(const_Collection self)
     Element * elementSuivant = self->premier;
     while(elementSuivant != NULL)
     {
-        voi_afficher(elementSuivant);
+        voi_afficher(elementSuivant->voiture);
         elementSuivant = elementSuivant->suivant;
     }
 }
