@@ -265,18 +265,11 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
     {
         // On ajoute la voiture entre 2 autres voitures de la liste chaînée
         Element * temp = self->premier;
-        while(temp != NULL)
+        while(temp != NULL && (voi_getAnnee(element->voiture) > voi_getAnnee(temp->voiture)))
         {
             // On arrete la boucle quand on trouve un élément qui est plus grand que l'élément qu'on veut placer
             // L'élément temp est donc l'élément qui suit l'élément qu'on veut placer dans un ordre trié
-            if (voi_getAnnee(element->voiture) < voi_getAnnee(temp->voiture))
-            {
-                break;
-            }
-            else
-            {
-                temp = temp->suivant;
-            }
+            temp = temp->suivant;
         }
         // On créé alors tous les liens entre les différents éléments de la liste chaînée
         temp->precedent->suivant = element;
