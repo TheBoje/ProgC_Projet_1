@@ -156,7 +156,21 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 
 void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 {
-    // TODO This
+    myassert(self->estTrie, "col_addVoitureSansTri - Collection not sorted");
+    myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
+
+    if(voi_getAnnee(self->premier->voiture) > voi_getAnnee(voiture))
+    {
+
+    }
+    else if(voi_getAnnee(self->dernier->voiture) < voi_getAnnee(voiture))
+    {
+
+    }
+    else
+    {
+        
+    }
 }
 
 void col_supprVoitureSansTri(Collection self, int pos)
