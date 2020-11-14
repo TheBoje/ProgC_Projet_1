@@ -17,14 +17,14 @@
 typedef struct Element
 {
     Voiture voiture;
-    struct Element * precedent;
-    struct Element * suivant;
+    struct Element *precedent;
+    struct Element *suivant;
 } Element;
 
 struct CollectionP
 {
-    Element * premier;
-    Element * dernier;
+    Element *premier;
+    Element *dernier;
     int nombreVoitures;
     bool estTrie;
 };
@@ -33,14 +33,14 @@ struct CollectionP
  * initialisation de la structure
  *----------*/
 
-// @brief Créé une collection initialisée en tant que collection vide
+// @brief Créer une collection initialisée en tant que collection vide
 Collection col_creer()
 {
     Collection result = malloc(sizeof(struct CollectionP));
     // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
     if (result == NULL)
     {
-        fprintf(stderr,"Error:Collection - col_creer - mem alloc failed");
+        fprintf(stderr, "Error:Collection - col_creer - mem alloc failed");
         exit(EXIT_FAILURE);
     }
     result->premier = NULL;
@@ -50,7 +50,7 @@ Collection col_creer()
     return result;
 }
 
-// @brief Créé une collection a partir d'une autre collection (clone)
+// @brief Créer une collection a partir d'une autre collection (clone)
 Collection col_creerCopie(const_Collection source)
 {
     myassert(source != NULL, "col_creerCopie - Source is null");
@@ -59,13 +59,14 @@ Collection col_creerCopie(const_Collection source)
     // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
     if (result == NULL)
     {
-        fprintf(stderr,"Error:Collection - col_creer - mem alloc failed");
+        fprintf(stderr, "Error:Collection - col_creer - mem alloc failed");
         exit(EXIT_FAILURE);
     }
 
     result->nombreVoitures = source->nombreVoitures;
     result->estTrie = source->estTrie;
-    
+
+    // Si le premier est NULL, alors la liste est vide.
     if (source->premier == NULL)
     {
         result->premier = NULL;
@@ -73,11 +74,20 @@ Collection col_creerCopie(const_Collection source)
     }
     else
     {
-        Element * elementActuel = source->premier;
-        Element * elementPrecedent = NULL;
+        Element *elementActuel = source->premier;
+        Element *elementPrecedent = NULL;
+
+        // On passe par tous les éléments du la source
         for (int i = 0; i < result->nombreVoitures; i++)
         {
-            Element * element = malloc(sizeof(Element)); // TODO Verifier le malloc NULL
+            Element *element = malloc(sizeof(Element));
+            // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
+            if (element == NULL)
+            {
+                fprintf(stderr, "Error:Collection - col_creer - mem alloc failed");
+                exit(EXIT_FAILURE);
+            }
+
             element->voiture = voi_creerCopie(elementActuel->voiture);
 
             element->precedent = elementPrecedent;
@@ -85,27 +95,30 @@ Collection col_creerCopie(const_Collection source)
             {
                 result->premier = element;
             }
-            else 
+            else
             {
                 elementPrecedent->suivant = element;
             }
+
+            // Gestion de la fin de la liste
             if (source->dernier == elementActuel)
             {
                 result->dernier = element;
                 element->suivant = NULL;
             }
+
             elementPrecedent = element;
             elementActuel = elementActuel->suivant;
         }
-
     }
     return result;
 }
 
+// @brief Détruit la collection
 void col_detruire(Collection *pself)
 {
-    Element * element = (*pself)->premier;
-    Element * elementSuivant = NULL;
+    Element *element = (*pself)->premier;
+    Element *elementSuivant = NULL;
     if (element != NULL && element->suivant != NULL)
     {
         elementSuivant = element->suivant;
@@ -124,10 +137,11 @@ void col_detruire(Collection *pself)
     *pself = NULL;
 }
 
+// @brief Vide la collection
 void col_vider(Collection self)
 {
-    Element * element = self->premier;
-    Element * elementSuivant;
+    Element *element = self->premier;
+    Element *elementSuivant;
     if (element != NULL && element->suivant != NULL)
     {
         elementSuivant = element->suivant;
@@ -148,27 +162,25 @@ void col_vider(Collection self)
     self->estTrie = true;
 }
 
-
 /*----------*
  * accesseurs
  *----------*/
+// @brief Retourne le nombre de voitures contenues dans la collection
 int col_getNbVoitures(const_Collection self)
 {
-    return self->nombreVoitures;   
+    return self->nombreVoitures;
 }
 
-
-// on récupère une copie de la voiture
+// @brief Retourne une copie de la voiture contenue en [pos]
 Voiture col_getVoiture(const_Collection self, int pos)
 {
     myassert((pos >= 0) && (pos < self->nombreVoitures), "col_getVoiture - Position not valid");
-    
 
     // On regarde si la position est dans la première ou deuxième moitié de la liste afin d'effectuer le minimum d'opérations
-    if(pos < (self->nombreVoitures / 2))
+    if (pos < (self->nombreVoitures / 2))
     {
-        Element * element = self->premier;
-        for(int i = 0; i < pos; i++)
+        Element *element = self->premier;
+        for (int i = 0; i < pos; i++)
         {
             element = element->suivant;
         }
@@ -176,16 +188,14 @@ Voiture col_getVoiture(const_Collection self, int pos)
     }
     else
     {
-        Element * element = self->dernier;
+        Element *element = self->dernier;
         // On parcours la liste en partant de la fin
-        for(int i = self->nombreVoitures - 1; i > pos; i--)
+        for (int i = self->nombreVoitures - 1; i > pos; i--)
         {
             element = element->precedent;
         }
         return voi_creerCopie(element->voiture);
     }
-    
-
 }
 
 // @brief Ajoute la voiture à la fin de la chaine
@@ -193,8 +203,8 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
     myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
 
-    Element * element = malloc(sizeof(Element));
-    
+    Element *element = malloc(sizeof(Element));
+
     // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
     if (element == NULL)
     {
@@ -204,8 +214,7 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 
     element->voiture = voi_creerCopie(voiture);
 
-    
-    
+    // Dans le cas ou la liste est vide
     if (self->nombreVoitures == 0)
     {
         element->suivant = NULL;
@@ -222,6 +231,7 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
     }
 
     self->nombreVoitures++;
+
     if (self->nombreVoitures > 1)
     {
         self->estTrie = false;
@@ -232,14 +242,13 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
     }
 }
 
-
+// @brief Ajoute un voiture à sa position triée
 void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 {
     myassert(self->estTrie, "col_addVoitureSansTri - Collection not sorted");
     myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
 
-
-    Element * element = malloc(sizeof(Element));
+    Element *element = malloc(sizeof(Element));
     // Dans le cas ou la mémoire n'est pas allouée correctement, le programme échoue
     if (element == NULL)
     {
@@ -249,7 +258,7 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
     element->voiture = voi_creerCopie(voiture);
 
-    if(voi_getAnnee(self->premier->voiture) > voi_getAnnee(voiture))
+    if (voi_getAnnee(self->premier->voiture) > voi_getAnnee(voiture))
     {
         // On ajoute la voiture au début de la liste chaînée
         self->premier->precedent = element;
@@ -257,7 +266,7 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
         element->suivant = self->premier;
         self->premier = element;
     }
-    else if(voi_getAnnee(self->dernier->voiture) < voi_getAnnee(voiture))
+    else if (voi_getAnnee(self->dernier->voiture) < voi_getAnnee(voiture))
     {
         // On ajoute la voiture à la fin de la liste chaînée
         self->dernier->suivant = element;
@@ -268,8 +277,8 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
     else
     {
         // On ajoute la voiture entre 2 autres voitures de la liste chaînée
-        Element * temp = self->premier;
-        while(temp != NULL && (voi_getAnnee(element->voiture) > voi_getAnnee(temp->voiture)))
+        Element *temp = self->premier;
+        while (temp != NULL && (voi_getAnnee(element->voiture) > voi_getAnnee(temp->voiture)))
         {
             // On arrete la boucle quand on trouve un élément qui est plus grand que l'élément qu'on veut placer
             // L'élément temp est donc l'élément qui suit l'élément qu'on veut placer dans un ordre trié
@@ -284,10 +293,10 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
     self->nombreVoitures++;
 }
 
-
+// @brief Supprime la voiture en [pos]
 void col_supprVoitureSansTri(Collection self, int pos)
 {
-    Element * aSupprimer;
+    Element *aSupprimer;
     if (pos == 0)
     {
         aSupprimer = self->premier;
@@ -319,11 +328,11 @@ void col_supprVoitureSansTri(Collection self, int pos)
     self->nombreVoitures--;
 }
 
+// @brief Supprime la voiture en [pos]
 void col_supprVoitureAvecTri(Collection self, int pos)
 {
     col_supprVoitureSansTri(self, pos);
 }
-
 
 // @brief Tri la collection self en utilisant l'algorithme de tri à bulles
 void col_trier(Collection self)
@@ -334,19 +343,19 @@ void col_trier(Collection self)
         exit(EXIT_FAILURE);
     }
 
-    if(!(self->estTrie))
+    if (!(self->estTrie))
     {
-        for(int i = self->nombreVoitures - 1; i >= 0; i--)
-        {   
-            Element * element = self->premier;
-            for(int j = 0; j < i; j++)
+        for (int i = self->nombreVoitures - 1; i >= 0; i--)
+        {
+            Element *element = self->premier;
+            for (int j = 0; j < i; j++)
             {
-                if(element == NULL)
+                if (element == NULL)
                     break;
-                else if(element->suivant == NULL)
+                else if (element->suivant == NULL)
                     break;
 
-                if(voi_getAnnee(element->suivant->voiture) < voi_getAnnee(element->voiture))
+                if (voi_getAnnee(element->suivant->voiture) < voi_getAnnee(element->voiture))
                     voi_swap(element->voiture, element->suivant->voiture);
 
                 element = element->suivant;
@@ -355,7 +364,6 @@ void col_trier(Collection self)
         self->estTrie = true;
     }
 }
-
 
 /*----------*
  * méthode secondaire d'affichage
@@ -368,24 +376,23 @@ void col_afficher(const_Collection self)
     printf("\tEst trié : %s\n", self->estTrie ? "Vrai" : "Faux");
     printf("\tNombre de voitures : %d\n", self->nombreVoitures);
 
-    Element * elementSuivant = self->premier;
-    while(elementSuivant != NULL)
+    Element *elementSuivant = self->premier;
+    while (elementSuivant != NULL)
     {
         voi_afficher(elementSuivant->voiture);
         elementSuivant = elementSuivant->suivant;
     }
 }
 
-
 /*----------*
  * entrées-sorties fichiers
  * note : le paramètre est un fichier déjà ouvert
  *----------*/
 
-// @brief Ecrit les données d'une collection dans un fichier 
+// @brief Ecrit les données d'une collection dans un fichier
 void col_ecrireFichier(const_Collection self, FILE *fd)
 {
-    if(self == NULL || fd == NULL)
+    if (self == NULL || fd == NULL)
     {
         fprintf(stderr, "Error:Collection - col_ecrireFichier - collection or file is null");
         exit(EXIT_FAILURE);
@@ -394,10 +401,10 @@ void col_ecrireFichier(const_Collection self, FILE *fd)
     fseek(fd, 0, SEEK_SET);
     fwrite(&(self->estTrie), sizeof(bool), 1, fd);
     fwrite(&(self->nombreVoitures), sizeof(int), 1, fd);
-    
-    Element * element = self->premier;
 
-    while(element != NULL)
+    Element *element = self->premier;
+
+    while (element != NULL)
     {
         voi_ecrireFichier(element->voiture, fd);
         element = element->suivant;
@@ -407,7 +414,7 @@ void col_ecrireFichier(const_Collection self, FILE *fd)
 // @brief Remplie la collection self avec les données stockés dans le fichier fd
 void col_lireFichier(Collection self, FILE *fd)
 {
-    if(self == NULL || fd == NULL)
+    if (self == NULL || fd == NULL)
     {
         fprintf(stderr, "Error:Collection - col_lireFichier - collection or file is null");
         exit(EXIT_FAILURE);
@@ -419,17 +426,17 @@ void col_lireFichier(Collection self, FILE *fd)
     fread(&(self->estTrie), sizeof(bool), 1, fd);
     fread(&(self->nombreVoitures), sizeof(int), 1, fd);
 
-    Element * element = (Element *)malloc(sizeof(struct Element));
-    if(element == NULL)
+    Element *element = (Element *)malloc(sizeof(struct Element));
+    if (element == NULL)
     {
         fprintf(stderr, "Error:Collection - col_lireFichier - element is null");
         exit(EXIT_FAILURE);
     }
 
-    if(self->nombreVoitures == 1)
+    if (self->nombreVoitures == 1)
     {
         // Si le fichier ne comporte qu'une voiture, la liste ne contient qu'une seule voiture
-        if(element == NULL)
+        if (element == NULL)
         {
             fprintf(stderr, "Error:Collection - col_lireFichier - element is null");
             exit(EXIT_FAILURE);
@@ -444,25 +451,25 @@ void col_lireFichier(Collection self, FILE *fd)
     }
     else
     {
-        for(int i = 0; i < self->nombreVoitures - 1; i++)
+        for (int i = 0; i < self->nombreVoitures - 1; i++)
         {
-            Element * elementSuivant = (Element *)malloc(sizeof(struct Element));
+            Element *elementSuivant = (Element *)malloc(sizeof(struct Element));
 
-            if(elementSuivant == NULL)
+            if (elementSuivant == NULL)
             {
                 fprintf(stderr, "Error:Collection - col_lireFichier - elementSuivant is null");
                 exit(EXIT_FAILURE);
             }
 
             element->voiture = voi_creerFromFichier(fd);
-            if(i == 0)
+            if (i == 0)
             {
-                
+
                 element->precedent = NULL;
 
-                self->premier = element; 
+                self->premier = element;
             }
-            else if(i == self->nombreVoitures - 2)
+            else if (i == self->nombreVoitures - 2)
             {
                 elementSuivant->voiture = voi_creerFromFichier(fd);
                 elementSuivant->suivant = NULL;
