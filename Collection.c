@@ -225,14 +225,43 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
     }
 }
 
+
 void col_supprVoitureSansTri(Collection self, int pos)
 {
-    // TODO This
+    Element * aSupprimer;
+    if (pos == 0)
+    {
+        aSupprimer = self->premier;
+        aSupprimer->suivant->precedent = NULL;
+        self->premier = aSupprimer->suivant;
+        voi_detruire(&(aSupprimer->voiture));
+        free(aSupprimer);
+    }
+    else if (pos == self->nombreVoitures)
+    {
+        aSupprimer = self->dernier;
+        aSupprimer->precedent->suivant = NULL;
+        self->dernier = aSupprimer->precedent;
+        voi_detruire(&(aSupprimer->voiture));
+        free(aSupprimer);
+    }
+    else
+    {
+        aSupprimer = self->premier;
+        for (int i = 0; i <= pos; i++)
+        {
+            aSupprimer = aSupprimer->suivant;
+        }
+        aSupprimer->suivant->precedent = aSupprimer->precedent;
+        aSupprimer->precedent->suivant = aSupprimer->suivant;
+        voi_detruire(&(aSupprimer->voiture));
+        free(aSupprimer);
+    }
 }
 
 void col_supprVoitureAvecTri(Collection self, int pos)
 {
-    // TODO This
+    col_supprVoitureSansTri(self, pos);
 }
 
 void col_trier(Collection self)
