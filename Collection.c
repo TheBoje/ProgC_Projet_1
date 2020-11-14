@@ -196,7 +196,7 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 
 void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 {
-    myassert(self->estTrie, "col_addVoitureSansTri - Collection not sorted");
+    //myassert(self->estTrie, "col_addVoitureSansTri - Collection not sorted");
     myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
 
 
@@ -246,6 +246,7 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
         temp->precedent = element;
         element->suivant = temp;
     }
+    self->nombreVoitures++;
 }
 
 
@@ -280,6 +281,7 @@ void col_supprVoitureSansTri(Collection self, int pos)
         voi_detruire(&(aSupprimer->voiture));
         free(aSupprimer);
     }
+    self->nombreVoitures--;
 }
 
 void col_supprVoitureAvecTri(Collection self, int pos)
