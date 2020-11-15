@@ -168,12 +168,14 @@ void col_vider(Collection self)
 // @brief Retourne le nombre de voitures contenues dans la collection
 int col_getNbVoitures(const_Collection self)
 {
+    myassert(self != NULL, "col_getNbVoitures - input invalid");
     return self->nombreVoitures;
 }
 
 // @brief Retourne une copie de la voiture contenue en [pos]
 Voiture col_getVoiture(const_Collection self, int pos)
 {
+    myassert(self != NULL, "col_getVoiture - Collection is null");
     myassert((pos >= 0) && (pos < self->nombreVoitures), "col_getVoiture - Position not valid");
 
     // On regarde si la position est dans la première ou deuxième moitié de la liste afin d'effectuer le minimum d'opérations
@@ -201,6 +203,7 @@ Voiture col_getVoiture(const_Collection self, int pos)
 // @brief Ajoute la voiture à la fin de la chaine
 void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
+    myassert(self != NULL, "col_addVoitureSansTri - Collection is null");
     myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
 
     Element *element = malloc(sizeof(Element));
@@ -245,6 +248,7 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 // @brief Ajoute un voiture à sa position triée
 void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 {
+    myassert(self != NULL, "col_addVoitureAvecTri - Collection is null");
     myassert(self->estTrie, "col_addVoitureSansTri - Collection not sorted");
     myassert(voiture != NULL, "col_addVoitureSansTri - Car is null");
 
@@ -296,6 +300,9 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 // @brief Supprime la voiture en [pos]
 void col_supprVoitureSansTri(Collection self, int pos)
 {
+    myassert(self != NULL, "col_supprVoitureSansTri - Collection is null");
+    myassert((pos >= 0) && (pos < self->nombreVoitures), "col_supprVoitureSansTri - Position not valid");
+
     Element *aSupprimer;
     if (pos == 0)
     {
@@ -331,17 +338,15 @@ void col_supprVoitureSansTri(Collection self, int pos)
 // @brief Supprime la voiture en [pos]
 void col_supprVoitureAvecTri(Collection self, int pos)
 {
+    // On remarque que l'on utilise le même algorithme pour supprimer une voiture avec ou sans tri,
+    // On utilise donc la même fonction
     col_supprVoitureSansTri(self, pos);
 }
 
 // @brief Tri la collection self en utilisant l'algorithme de tri à bulles
 void col_trier(Collection self)
 {
-    if (self == NULL)
-    {
-        fprintf(stderr, "Error:Collection - col_trier - collection is null");
-        exit(EXIT_FAILURE);
-    }
+    myassert(self != NULL, "col_trier - Collection is null");
 
     if (!(self->estTrie))
     {
