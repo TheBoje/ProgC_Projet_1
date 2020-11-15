@@ -456,6 +456,7 @@ void col_lireFichier(Collection self, FILE *fd)
     }
     else
     {
+        // Si il y a plus d'une voiture stocké sur le disque, on créer la liste voiture par voiture
         for (int i = 0; i < self->nombreVoitures - 1; i++)
         {
             Element *elementSuivant = (Element *)malloc(sizeof(struct Element));
